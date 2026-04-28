@@ -86,6 +86,25 @@ export default function Home() {
         <p className="mt-1">
           Built with Next.js, Claude AI, and shadcn/ui
         </p>
+        <p className="mt-2 flex items-center justify-center gap-3">
+          <a
+            href="https://guardian-shield-sooty.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-2 hover:text-foreground transition-colors"
+          >
+            Live Demo
+          </a>
+          <span>·</span>
+          <a
+            href="https://github.com/pradyten/Policy-Intake-Tool"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-2 hover:text-foreground transition-colors"
+          >
+            GitHub
+          </a>
+        </p>
       </footer>
     </>
   );
