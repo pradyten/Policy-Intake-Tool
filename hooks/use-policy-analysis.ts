@@ -5,7 +5,6 @@ import type { PolicyData } from "@/lib/schemas/policy";
 import type { CoverageAnalysis } from "@/lib/schemas/analysis";
 import type { TalkingPoints } from "@/lib/schemas/talking-points";
 import type { ApiResponse } from "@/lib/schemas/api-response";
-import { getCachedResponse, setCachedResponse } from "@/lib/cache";
 import { fileToBase64, getMimeType } from "@/lib/utils";
 
 type Status = "idle" | "extracting" | "analyzing" | "complete" | "error";
@@ -122,20 +121,6 @@ export function usePolicyAnalysis() {
 
   const analyzeSample = useCallback(
     async (sampleId: string) => {
-      // Check cache first
-      const cached = getCachedResponse(sampleId);
-      if (cached) {
-        setState({
-          status: "complete",
-          policyData: cached.policyData,
-          coverageAnalysis: cached.coverageAnalysis,
-          talkingPoints: cached.talkingPoints,
-          apiResponse: cached,
-          error: null,
-        });
-        return;
-      }
-
       const startTime = Date.now();
       try {
         setState({ ...initialState, status: "extracting" });
@@ -165,11 +150,7 @@ export function usePolicyAnalysis() {
         const policyData = (await extractRes.json()) as PolicyData;
         setState((prev) => ({ ...prev, policyData }));
 
-        const apiResponse = await runAnalysisAndTalkingPoints(
-          policyData,
-          startTime
-        );
-        setCachedResponse(sampleId, apiResponse);
+        await runAnalysisAndTalkingPoints(policyData, startTime);
       } catch (error) {
         setState((prev) => ({
           ...prev,
